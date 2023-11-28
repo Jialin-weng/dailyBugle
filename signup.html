@@ -8,32 +8,36 @@
 </head>
 <body>
 
-<header>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Daily Bugle News</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mr-auto">
-                <!-- Add your other navbar items here -->
-            </ul>
-            <div class="d-flex">
-                <button class="btn btn-outline-success my-2 my-sm-0 mr-2" onclick="window.location.href='login.html'">Login</button>
-                <button class="btn btn-outline-primary my-2 my-sm-0" onclick="window.location.href='signup.html'">Signup</button>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="index.html">Daily Bugle News</a>
+    
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+    
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                </ul>
+    
+                <!-- Check for the presence of the cookie and update the buttons accordingly -->
+                <div class="d-flex" id="loginSignupButtons">
+                    <!-- JavaScript will dynamically update these buttons -->
+                </div>
+    
+                <!-- Search Bar -->
+                <form class="form-inline my-2 my-lg-0 ml-2">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
             </div>
-            <form class="form-inline my-2 my-lg-0 ml-2">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
-        </div>
-    </nav>
-</header>
+        </nav>
+    </header>
 
 <div class="container mt-5">
     <h2 class="mb-4">Signup for Daily Bugle News</h2>
     
-    <form method = "post" onsubmit="submitSignUpForm()">
+    <form method = "post" onsubmit="submitSignUpForm(event)">
         <div class="form-group">
             <label for="username">Username</label>
             <input type="text" class="form-control" id="username" placeholder="Enter your username">
