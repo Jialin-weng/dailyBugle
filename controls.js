@@ -4,11 +4,12 @@ endpoint['users']='http://localhost:3003/signup';
 function submitSignUpForm() {
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
-    signUpForm(username, password);
+    var userType= document.getElementById('userType').value;
+    signUpForm(username, password, userType);
 }
 
-async function signUpForm(username, password) {
-    const dataToSend = { "username": username, "password": password };
+async function signUpForm(username, password,userType) {
+    const dataToSend = { "username": username, "password": password,"userType": userType };
 
     let addUser = await fetch( endpoint['users'],
     {

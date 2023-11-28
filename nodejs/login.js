@@ -35,7 +35,7 @@ app.get('/users', async (request, response) => {
 
 app.post('/signup', async (request, response) => {
     try {
-        const { username, password } = request.body;
+        const { username, password,userType } = request.body;
 
         // Connect to the MongoDB database
         await client.connect();
@@ -44,6 +44,7 @@ app.post('/signup', async (request, response) => {
         const result = await client.db('DailyBugle').collection('Users').insertOne({
             username,
             password,
+            userType
         });
 
         // Send a response indicating success
