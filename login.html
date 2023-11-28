@@ -21,12 +21,14 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
                     <!-- Add your other navbar items here -->
- 
                 </ul>
     
-                <!-- Login Button -->
-                <button class="btn btn-outline-success my-2 my-sm-0" onclick="window.location.href='login.html'">Login</button>
-    
+                <!-- Login and Signup Buttons -->
+                <div class="d-flex">
+                    <button class="btn btn-outline-success my-2 my-sm-0 mr-2" onclick="window.location.href='login.html'">Login</button>
+                    <button class="btn btn-outline-primary my-2 my-sm-0" onclick="window.location.href='signup.html'">Signup</button>
+                </div>
+                
                 <!-- Search Bar -->
                 <form class="form-inline my-2 my-lg-0 ml-2">
                     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -36,18 +38,31 @@
         </nav>
     </header>
 
-
-        <section id="ad">
-            <!-- Add your ad content here -->
-            <img src="ad-image.jpg" alt="Advertisement">
-        </section>
-    </main>
+    <div class="container mt-5">
+        <h2 class="mb-4">Login to Daily Bugle News</h2>
+    
+        <form>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" placeholder="Enter your username">
+            </div>
+    
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Enter your password">
+            </div>
+    
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+    </div>
 
     <footer class="fixed-bottom fixed-right bg-light p-2 text-right">
         <p>&copy; 2023 Daily Bugle News</p>
     </footer>
+
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script><script src="controls.js"></script>
+    <script src="control.js"></script>
 </body>
 </html>
