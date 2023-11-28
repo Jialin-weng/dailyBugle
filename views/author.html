@@ -3,8 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Bugle News</title>
+    <title>Edit Article - Daily Bugle News</title>
     <!-- Add your CSS link here for styling -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1em;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1em;
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -12,45 +68,24 @@
     </header>
 
     <main>
-        <section id="headline-story">
-            <h2>Headline Story Title</h2>
-            <p>Headline Story Teaser</p>
-        </section>
+        <form id="edit-article-form">
+            <label for="headline-input">Headline:</label>
+            <input type="text" id="headline-input" name="headline" required>
 
-        <section id="previous-stories">
-            <h2>Previous Stories</h2>
-            <ul>
-                <li>
-                    <h3>Title of story #2</h3>
-                    <p>Teaser for story #2</p>
-                </li>
-                <li>
-                    <h3>Title of story #3</h3>
-                    <p>Teaser for story #3</p>
-                </li>
-                <!-- Add more previous stories here -->
-            </ul>
-        </section>
+            <label for="passage-input">Passage:</label>
+            <textarea id="passage-input" name="passage" rows="6" required></textarea>
 
-        <section id="login">
-            <a href="#">Log In</a>
-        </section>
+            <label for="teaser-input">Teaser:</label>
+            <textarea id="teaser-input" name="teaser" rows="4" required></textarea>
 
-        <section id="comments">
-            <h2>Comments</h2>
-            <!-- Add comment functionality here -->
-        </section>
+            <label for="categories-input">Categories:</label>
+            <input type="text" id="categories-input" name="categories">
 
-        <section id="search">
-            <h2>Search Stories and Comments</h2>
-            <input type="text" id="search-input" placeholder="Search...">
-            <!-- Add search functionality here -->
-        </section>
+            <label for="image-input">Upload Image:</label>
+            <input type="file" id="image-input" name="image">
 
-        <section id="ad">
-            <!-- Add your ad content here -->
-            <img src="ad-image.jpg" alt="Advertisement">
-        </section>
+            <button type="submit">Save Changes</button>
+        </form>
     </main>
 
     <footer>
