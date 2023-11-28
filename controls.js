@@ -10,28 +10,21 @@ function submitSignUpForm() {
 async function signUpForm(username, password) {
     const dataToSend = { "username": username, "password": password };
 
-    try {
-        let signUpResponse = await fetch(endpoint['users'], {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(dataToSend)
-        });
-
-        if (!signUpResponse.ok) {
-            console.log("hi")
-            console.error('Sign-up request failed:', signUpResponse.statusText);
-            alert('Failed to sign up. Please try again.');
-            return;
-        }
-        let result = await signUpResponse.json();
-
-    } catch (error) {
-        console.error("Error signing up user:", error);
-        console.log(error)
-        alert("Failed to sign up.");
-        // STUB: Handle the error and display it on the page or take appropriate action
-    }
+    let addUser = await fetch( endpoint['users'],
+    {
+        method:'POST',
+        headers: {
+            'Accept':'application/JSON',
+            'Content-type':'application/json'
+        },
+        body: JSON.stringify( dataToSend )
+    })
+    .then( response=>response.json())
+    .then( (result)=> {
+        statusMessage(result);
+        fetchAndListVoters(); // update the list of voters
+    })
+    .catch(error=>console.log("error saving user"));
+    // STUB: maybe write the error on the page somewhere
 }
+    
