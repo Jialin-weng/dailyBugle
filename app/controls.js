@@ -1,6 +1,7 @@
 const endpoint = {};
 endpoint['signup']='http://localhost:3003/signup';
 endpoint['login']='http://localhost:3003/login';
+endpoint['ads'] = 'http://localhost:3004/ads';
 
 function logout(event){
     event.preventDefault();
@@ -98,14 +99,23 @@ async function loginForm(username, password) {
         alert("Failed to log in.");
     }
 }
-function submitSignUpForm() {
+async function submitSignUpForm(event) {
+    event.preventDefault();
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
-    var userType= document.getElementById('userType').value;
-    signUpForm(username, password, userType);
-    return false;
+    var userType = document.getElementById('userType').value;
 
+    // Use try-catch to handle errors during the signup process
+    try {
+        await signUpForm(username, password, userType);
+        window.location.href = 'login.html';
+    } catch (error) {
+        console.error('Error during signup:', error);
+    }
+
+    return false;
 }
+
 
 async function signUpForm(username, password,userType) {
     const dataToSend = { "username": username, "password": password,"userType": userType };
@@ -121,4 +131,47 @@ async function signUpForm(username, password,userType) {
     .then( response=>response.json())
 
 }
+
+
+async function getAd(){
+    try {
+        const response = await fetch(endpoint['ads']);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching ads:', error);
+    }
+}
     
+async function displayAds() {
+    const ads = await getAd();
+    console.log(ads);
+    const adsContainer = document.getElementById('adsContainer');
+
+    // Clear previous content
+    adsContainer.innerHTML = '';
+
+    ads.forEach(ad => {
+        const adContainer = document.createElement('div');
+        adContainer.classList.add('ad-container'); // Add a class for styling
+
+        // Header element
+        const headerElement = document.createElement('h2');
+        headerElement.textContent = `Ad Header: ${ad.adName}`;
+        adContainer.appendChild(headerElement);
+
+        // Body element
+        const bodyElement = document.createElement('p');
+        bodyElement.textContent = `Ad Body: ${ad.body}`;
+        adContainer.appendChild(bodyElement);
+
+        // Add a click event listener to the adContainer
+        adContainer.addEventListener('click', () => {
+            // Handle the click event (e.g., open a detailed view, navigate to a link, etc.)
+            console.log('Ad clicked:', ad._id);
+        });
+
+        adsContainer.appendChild(adContainer);
+    });
+}
+
