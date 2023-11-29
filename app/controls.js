@@ -73,7 +73,7 @@ async function submitLoginForm(event){
         window.location.href = 'index.html';
     }
     else if (result.success == false){
-        alert("wrong");
+        alert("Wrong Combination Of Username Password");
     }
 }
 async function loginForm(username, password) {
