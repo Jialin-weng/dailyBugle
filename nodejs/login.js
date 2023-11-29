@@ -1,5 +1,4 @@
 const express = require('express');
-const session = require('express-session');
 const { MongoClient } = require('mongodb');
 const cors = require('cors'); // Import the cors middleware
 const app = express();
@@ -16,12 +15,6 @@ client.connect().then(() => {
     console.error('MongoDB connection error:', err);
 });
 
-function setCookie(name, value, days) {
-    const expirationDate = new Date();
-    expirationDate.setDate(expirationDate.getDate() + days);
-    const cookieValue = `${encodeURIComponent(name)}=${encodeURIComponent(value)};expires=${expirationDate.toUTCString()};path=/`;
-    document.cookie = cookieValue;
-}
 
 app.listen(port, ()=> console.log(`listening on port ${port}`));
 
