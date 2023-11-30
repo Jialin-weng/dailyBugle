@@ -5,6 +5,8 @@ endpoint['ads'] = 'http://localhost:3004/ads';
 endpoint['adsIP'] = 'http://localhost:3004/get-ip';
 endpoint['adsClicked'] = 'http://localhost:3004/adsClicked';
 endpoint['adsViewed'] = 'http://localhost:3004/adsViewed';
+endpoint['allArticles'] = 'http://localhost:3005/articles';
+
 
 var ipAddress = "";
 
@@ -167,6 +169,28 @@ async function getAd(){
     }
 }
 
+async function getArticles(){
+    try {
+        const response = await fetch(endpoint['allArticles']);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching articles:', error);
+    }
+}
+
+async function displayArticle() {
+    const articleList = await getArticles();
+    // Check if there are any ads
+    if (articleList.length === 0) {
+        console.log('No articles available.');
+        return;
+    }
+    const randomIndex = Math.floor(Math.random() * articleList.length);
+    const article = articleList[randomIndex];
+    console.log(article);
+}
+
 document.addEventListener("DOMContentLoaded", function() {
     // Make a GET request to the server endpoint
     fetch(endpoint["adsIP"])
@@ -285,6 +309,7 @@ async function sendAdViewedRequest(adId, ipAddress,sendName) {
 // Wait for the DOM to be fully loaded
 document.addEventListener("DOMContentLoaded", function() {
     // Call displayAds with the result of getAd
+    displayArticle(getArticles());
     displayAds(getAd());
     const userType = getCookie('userType');
     generateContentBasedOnUserType(userType);
