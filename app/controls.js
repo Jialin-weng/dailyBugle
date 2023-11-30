@@ -6,9 +6,12 @@ endpoint['adsIP'] = 'http://localhost:3004/get-ip';
 endpoint['adsClicked'] = 'http://localhost:3004/adsClicked';
 endpoint['adsViewed'] = 'http://localhost:3004/adsViewed';
 endpoint['allArticles'] = 'http://localhost:3005/articles';
+endpoint['editArticles'] = 'http://localhost:3005/articleChange';
+endpoint['addComment'] = 'http://localhost:3005/addComment';
 
 
 var ipAddress = "";
+var currentArticle = null;
 
 const browserInfo = {
     appName: navigator.appName,
@@ -17,7 +20,6 @@ const browserInfo = {
     platform: navigator.platform,
 };
 
-console.log('Browser Information:', navigator.userAgent);
 
 function logout(event){
     event.preventDefault();
@@ -50,17 +52,17 @@ function getCookie(name) {
 const userType = getCookie('userType');
 const currentUserName = getCookie('userName');
 
-if (currentUserName) {
-    console.log(`Username: ${currentUserName}`);
-} else {
-    console.log('Username not found');
-}
+// if (currentUserName) {
+//     console.log(`Username: ${currentUserName}`);
+// } else {
+//     console.log('Username not found');
+// }
 
-if (userType) {
-    console.log(`User type: ${userType}`);
-} else {
-    console.log('User type cookie not found.');
-}
+// if (userType) {
+//     console.log(`User type: ${userType}`);
+// } else {
+//     console.log('User type cookie not found.');
+// }
 
 // Dynamically update the login and signup buttons based on the presence of the cookie
 const loginSignupButtons = document.getElementById("loginSignupButtons");
@@ -188,7 +190,8 @@ async function displayArticle() {
     }
     const randomIndex = Math.floor(Math.random() * articleList.length);
     const article = articleList[randomIndex];
-    console.log(article);
+    console.log(article.title);
+    return article;
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -215,7 +218,6 @@ async function displayAds() {
     }
     const randomIndex = Math.floor(Math.random() * adList.length);
     const ads = adList[randomIndex];
-    console.log(ads);
     const adsContainer = document.getElementById('adsContainer');
 
     // Clear previous content
@@ -274,12 +276,6 @@ async function sendAdClickRequest(adId, ipAddress,sendName) {
             user_agent: navigator.userAgent, // Example: sending user agent information
         }),
     });
-
-    if (response.ok) {
-        console.log('Ad click recorded successfully');
-    } else {
-        console.error('Failed to record ad click');
-    }
 }
 
 
@@ -296,20 +292,15 @@ async function sendAdViewedRequest(adId, ipAddress,sendName) {
             user_agent: navigator.userAgent, // Example: sending user agent information
         }),
     });
-
-    if (response.ok) {
-        console.log('Ad click recorded successfully');
-    } else {
-        console.error('Failed to record ad click');
-    }
 }
 
 
 
 // Wait for the DOM to be fully loaded
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function() {
     // Call displayAds with the result of getAd
-    displayArticle(getArticles());
+    currentArticle = await displayArticle(getArticles());
+    console.log(currentArticle);
     displayAds(getAd());
     const userType = getCookie('userType');
     generateContentBasedOnUserType(userType);
@@ -332,17 +323,17 @@ function generateContentBasedOnUserType(userType) {
             generateDefaultContent();
     }
 }
-function generateAuthorContent() {
-
+async function generateAuthorContent() {
     const viewWelcome = document.getElementById('viewWelcome');
     viewWelcome.innerHTML = '<div class="container text-center"><h2>Welcome ' + currentUserName + '</h2><p>Modify your article below:</p></div>';
 
     const viewChangeSection = document.getElementById('viewContent');
     viewChangeSection.innerHTML = `
-        <div class="container" id="articleContainer">
+        <div class="container text-center" id="articleContainer">
             <div id="articleView">
-                <h2>Article Title</h2>
-                <p>Article Content</p>
+                <h2>${currentArticle.title}</h2>
+                <p>${currentArticle.body}</p>
+
             </div>
             <form id="articleForm" style="display:none;">
                 <div class="form-group">
@@ -353,21 +344,50 @@ function generateAuthorContent() {
                     <label for="articleContent">Article Content:</label>
                     <textarea class="form-control" id="articleContent" rows="5" placeholder="Enter article content" required></textarea>
                 </div>
-                <button type="button" class="btn btn-primary" onclick="submitArticleForm()">Save</button>
+                <button type="button" class="btn btn-primary" onclick="submitArticleForm('${currentArticle._id}')">Save</button>
                 <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
             </form>
             <button type="button" class="btn btn-info" onclick="toggleEditMode()">Edit</button>
         </div>
     `;
 }
+async function submitCommentData(commentData) {
+    fetch(endpoint["addComment"], {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(commentData),
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            console.log('comment successfully');
+          } else {
+            console.error('Failed to update article:', data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error updating article:', error);
+        });
+}
 
-function submitComment() {
+async function submitComment() {
     const commentContent = document.getElementById('commentContent').value;
 
     // Create a new list item for the comment
     const newComment = document.createElement('li');
     newComment.className = 'list-group-item';
     newComment.textContent = commentContent;
+    console.log(newComment)
+    const commentData = {
+        article_id: currentArticle._id, 
+        article_comment : commentContent,
+        user_id :currentUserName
+    };
+
+    await submitCommentData(commentData);
+
 
     // Append the new comment to the comment list
     document.getElementById('commentList').appendChild(newComment);
@@ -375,28 +395,57 @@ function submitComment() {
     // Clear the comment form after submission
     document.getElementById('commentContent').value = '';
 }
+async function submitArticleData(articleData) {
+    fetch(endpoint["editArticles"], {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(articleData),
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            console.log('Article updated successfully');
+          } else {
+            console.error('Failed to update article:', data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error updating article:', error);
+        });
+}
 
-
-function submitArticleForm() {
+async function submitArticleForm(id) {
     const articleTitle = document.getElementById('articleTitle').value;
     const articleContent = document.getElementById('articleContent').value;
-
+    const currentDate = new Date();
+    const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
     // Create a JSON object with the article information
     const articleData = {
-        title: articleTitle,
-        content: articleContent,
+        article_id: id,
+        article_title: articleTitle,
+        article_content: articleContent,
+        article_edited : formattedDate,
     };
 
-    // Log the JSON object to the console (replace this with your actual logic)
-    console.log('Article Data:', articleData);
 
+    await submitArticleData(articleData);
+
+
+    // Log the JSON object to the console (replace this with your actual logic)
     // Perform additional actions, such as sending the data to the server
     // Example: You can call a function from controls.js to handle the server submission
     // submitArticleData(articleData);
 
     // After submitting, toggle back to view mode
+    
     toggleViewMode(articleData);
+
+
 }
+
+
 function toggleEditMode() {
     const articleView = document.getElementById('articleView');
     const articleForm = document.getElementById('articleForm');
@@ -422,8 +471,8 @@ function toggleViewMode(articleData) {
     articleForm.style.display = 'none';
 
     // Update the article view with the new data
-    articleView.querySelector('h2').textContent = articleData.title;
-    articleView.querySelector('p').textContent = articleData.content;
+    articleView.querySelector('h2').textContent = articleData.article_title;
+    articleView.querySelector('p').textContent = articleData.article_content;
 }
 
 function cancelEdit() {
@@ -435,19 +484,21 @@ function cancelEdit() {
     articleForm.style.display = 'none';
 }
 
-function generateReaderContent() {
+async function generateReaderContent() {
     const viewWelcome = document.getElementById('viewWelcome');
     viewWelcome.innerHTML = `<div class="container text-center"><h2>Welcome ${currentUserName}</h2></div>`;
 
     const viewChangeSection = document.getElementById('viewContent');
     viewChangeSection.innerHTML = `
         <div class="container text-center">
-            <h2>Reader View - Headline Story Title</h2>
-            <p>Reader-specific teaser for the headline story.</p>
+            <h2>${currentArticle.title}</h2>
+            <p>${currentArticle.body}</p>
         </div>
-        
     `;
     const buttonDiv= document.getElementById('addCommentDiv');
+
+
+    
 
     buttonDiv.innerHTML = '<button id = "addCommentButton" type="button" class="btn btn-primary" onclick="toggleCommentForm()">Add a Comment</button>';
 

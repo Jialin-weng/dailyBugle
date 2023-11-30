@@ -40,7 +40,6 @@ app.post("/adsClicked", (req, res) => {
 
     // Convert the ad_id to ObjectId
     const adObjectId = new ObjectId(ad_id);
-
     // Update the ad's clicked array
     ads.updateOne(
         { _id: adObjectId },
@@ -53,6 +52,7 @@ app.post("/adsClicked", (req, res) => {
                 // Check if the update was successful
                 if (result.modifiedCount > 0) {
                     res.send('Ad updated successfully');
+                    console.log(adObjectId)
                 } else {
                     res.status(404).send('Ad not found');
                 }
