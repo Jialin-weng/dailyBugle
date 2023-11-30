@@ -308,10 +308,88 @@ function generateContentBasedOnUserType(userType) {
 }
 function generateAuthorContent() {
     const viewWelcome = document.getElementById('viewWelcome');
-    viewWelcome.innerHTML = '<div class="container text-center"><h2>Welcome Author!</h2><p>Your author-specific content goes here.</p></div>';
+    viewWelcome.innerHTML = '<div class="container text-center"><h2>Welcome ' + currentUserName + '</h2><p>Modify your article below:</p></div>';
 
     const viewChangeSection = document.getElementById('viewContent');
-    viewChangeSection.innerHTML = '<div class="container text-center"><h2>Author View - Headline Story Title</h2><p>Author-specific teaser for the headline story.</p></div>';
+    viewChangeSection.innerHTML = `
+        <div class="container" id="articleContainer">
+            <div id="articleView">
+                <h2>Article Title</h2>
+                <p>Article Content</p>
+            </div>
+            <form id="articleForm" style="display:none;">
+                <div class="form-group">
+                    <label for="articleTitle">Article Title:</label>
+                    <input type="text" class="form-control" id="articleTitle" placeholder="Enter article title" required>
+                </div>
+                <div class="form-group">
+                    <label for="articleContent">Article Content:</label>
+                    <textarea class="form-control" id="articleContent" rows="5" placeholder="Enter article content" required></textarea>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="submitArticleForm()">Save</button>
+                <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
+            </form>
+            <button type="button" class="btn btn-info" onclick="toggleEditMode()">Edit</button>
+        </div>
+    `;
+}
+
+function submitArticleForm() {
+    const articleTitle = document.getElementById('articleTitle').value;
+    const articleContent = document.getElementById('articleContent').value;
+
+    // Create a JSON object with the article information
+    const articleData = {
+        title: articleTitle,
+        content: articleContent,
+    };
+
+    // Log the JSON object to the console (replace this with your actual logic)
+    console.log('Article Data:', articleData);
+
+    // Perform additional actions, such as sending the data to the server
+    // Example: You can call a function from controls.js to handle the server submission
+    // submitArticleData(articleData);
+
+    // After submitting, toggle back to view mode
+    toggleViewMode(articleData);
+}
+function toggleEditMode() {
+    const articleView = document.getElementById('articleView');
+    const articleForm = document.getElementById('articleForm');
+
+    // Toggle the visibility of the article view and edit form
+    articleView.style.display = 'none';
+    articleForm.style.display = 'block';
+
+    // Retrieve current article data and populate the form
+    const currentTitle = articleView.querySelector('h2').textContent;
+    const currentContent = articleView.querySelector('p').textContent;
+
+    document.getElementById('articleTitle').value = currentTitle;
+    document.getElementById('articleContent').value = currentContent;
+}
+
+function toggleViewMode(articleData) {
+    const articleView = document.getElementById('articleView');
+    const articleForm = document.getElementById('articleForm');
+
+    // Toggle the visibility of the article view and edit form
+    articleView.style.display = 'block';
+    articleForm.style.display = 'none';
+
+    // Update the article view with the new data
+    articleView.querySelector('h2').textContent = articleData.title;
+    articleView.querySelector('p').textContent = articleData.content;
+}
+
+function cancelEdit() {
+    const articleView = document.getElementById('articleView');
+    const articleForm = document.getElementById('articleForm');
+
+    // Toggle the visibility of the article view and edit form
+    articleView.style.display = 'block';
+    articleForm.style.display = 'none';
 }
 
 function generateReaderContent() {
