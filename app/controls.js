@@ -296,17 +296,19 @@ function generateContentBasedOnUserType(userType) {
         case 'author':
             // Generate content for author
             generateAuthorContent();
-            break;
+            break
         case 'reader':
             // Generate content for reader
             generateReaderContent();
-            break;
+
+            break
         default:
             // Generate content for none or other user types
             generateDefaultContent();
     }
 }
 function generateAuthorContent() {
+
     const viewWelcome = document.getElementById('viewWelcome');
     viewWelcome.innerHTML = '<div class="container text-center"><h2>Welcome ' + currentUserName + '</h2><p>Modify your article below:</p></div>';
 
@@ -333,6 +335,22 @@ function generateAuthorContent() {
         </div>
     `;
 }
+
+function submitComment() {
+    const commentContent = document.getElementById('commentContent').value;
+
+    // Create a new list item for the comment
+    const newComment = document.createElement('li');
+    newComment.className = 'list-group-item';
+    newComment.textContent = commentContent;
+
+    // Append the new comment to the comment list
+    document.getElementById('commentList').appendChild(newComment);
+
+    // Clear the comment form after submission
+    document.getElementById('commentContent').value = '';
+}
+
 
 function submitArticleForm() {
     const articleTitle = document.getElementById('articleTitle').value;
@@ -394,11 +412,37 @@ function cancelEdit() {
 
 function generateReaderContent() {
     const viewWelcome = document.getElementById('viewWelcome');
-    viewWelcome.innerHTML = `<div class="container text-center"><h2>Welcome ${currentUserName}</div>`;
+    viewWelcome.innerHTML = `<div class="container text-center"><h2>Welcome ${currentUserName}</h2></div>`;
 
     const viewChangeSection = document.getElementById('viewContent');
-    viewChangeSection.innerHTML = '<div class="container text-center"><h2>Reader View - Headline Story Title</h2><p>Reader-specific teaser for the headline story.</p></div>';
+    viewChangeSection.innerHTML = `
+        <div class="container text-center">
+            <h2>Reader View - Headline Story Title</h2>
+            <p>Reader-specific teaser for the headline story.</p>
+        </div>
+        
+    `;
+    const buttonDiv= document.getElementById('addCommentDiv');
+
+    buttonDiv.innerHTML = '<button id = "addCommentButton" type="button" class="btn btn-primary" onclick="toggleCommentForm()">Add a Comment</button>';
+
 }
+
+function toggleCommentForm() {
+    const commentFormContainer = document.getElementById('commentFormContainer');
+    const commentForm = document.getElementById('commentForm');
+
+    // Toggle the visibility of the comment form
+    if (commentFormContainer.style.display === 'none') {
+        commentFormContainer.style.display = 'block';
+    } else {
+        commentFormContainer.style.display = 'none';
+    }
+
+    // Clear the comment form when it is toggled
+    commentForm.reset();
+}
+
 
 function generateDefaultContent() {
     // Example: Display default content for none or other user types

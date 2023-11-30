@@ -49,10 +49,24 @@
 
         <br><br>
 
-        <section id="comments">
+        <div class="container" id="comments">
             <h2>Comments</h2>
-            <!-- Add comment functionality here -->
-        </section>
+            <div id = "addCommentDiv">
+
+            </div>
+        
+            <div id="commentFormContainer" style="display:none;">
+                <form id="commentForm">
+                    <div class="form-group">
+                        <label for="commentContent">Add a Comment:</label>
+                        <textarea class="form-control" id="commentContent" rows="3" placeholder="Enter your comment" required></textarea>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="submitComment()">Submit Comment</button>
+                </form>
+            </div>
+        
+
+        </div>
 
 
         <section id="adsContainer">
