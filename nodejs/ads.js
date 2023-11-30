@@ -44,7 +44,7 @@ app.post("/adsClicked", (req, res) => {
     // Update the ad's clicked array
     ads.updateOne(
         { _id: adObjectId },
-        { $addToSet: { clickedBy: {user_id,ip_add,user_agent} } },
+        { $inc: { clicks: 1 },$addToSet: { clickedBy: {user_id,ip_add,user_agent} } },
         (err, result) => {
             if (err) {
                 console.error('Error updating ad:', err);
@@ -75,7 +75,7 @@ app.post("/adsViewed", (req, res) => {
     // Update the ad's clicked array
     ads.updateOne(
         { _id: adObjectId },
-        { $addToSet: { viewedBy: {user_id,ip_add,user_agent} } },
+        {$inc: { views: 1 },$addToSet: { viewedBy: {user_id,ip_add,user_agent} } },
         (err, result) => {
             if (err) {
                 console.error('Error updating ad:', err);

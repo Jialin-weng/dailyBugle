@@ -316,7 +316,7 @@ function generateAuthorContent() {
 
 function generateReaderContent() {
     const viewWelcome = document.getElementById('viewWelcome');
-    viewWelcome.innerHTML = '<div class="container text-center"><h2>Welcome Reader!</h2><p>Your reader-specific content goes here.</p></div>';
+    viewWelcome.innerHTML = `<div class="container text-center"><h2>Welcome ${currentUserName}</div>`;
 
     const viewChangeSection = document.getElementById('viewContent');
     viewChangeSection.innerHTML = '<div class="container text-center"><h2>Reader View - Headline Story Title</h2><p>Reader-specific teaser for the headline story.</p></div>';
