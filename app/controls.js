@@ -642,6 +642,9 @@ async function submitComment() {
 
     // Clear the comment form after submission
     document.getElementById('commentContent').value = '';
+    if(userType == "author"){
+        displayCommentsForAuthor();
+    }
 }
 async function submitArticleData(articleData) {
     fetch(endpoint["editArticles"], {
