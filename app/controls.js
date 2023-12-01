@@ -11,6 +11,7 @@ endpoint['addComment'] = 'http://localhost:3005/addComment';
 endpoint['getAllComments'] = 'http://localhost:3005/getAllComments';
 endpoint['searchForArticle'] = 'http://localhost:3005/findArticle';
 endpoint['changeComments'] = 'http://localhost:3005/updateComment';
+endpoint['loadArticleIndex'] = 'http://localhost:3005/findArticleByIndex'
 
 
 var ipAddress = "";
@@ -216,7 +217,56 @@ async function searchArticle(event){
     const searchInput = document.getElementById('searchInput').value;
     findArticle(searchInput);
 }
+function findNextArticle(index) {
+    var nextindex = index +1
+    if (nextindex > 12){
+        alert("last article");
+    }
+    else{
+    dataToSend = {currentArticleIndex:nextindex}
+    fetch(endpoint["loadArticleIndex"], {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.nextArticle);
+        currentArticle = data.nextArticle;
+        console.log(userType);
+        generateContentBasedOnUserType(userType);
 
+    })
+    .catch(error => console.error('Error:', error));
+}
+}
+
+function findPrevArticle(index) {
+    var nextindex = index - 1
+    if (nextindex == 0){
+        nextindex = 1
+    }
+    dataToSend = {currentArticleIndex:nextindex};
+
+    fetch(endpoint["loadArticleIndex"], {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.nextArticle);
+        currentArticle = data.nextArticle;
+        console.log(userType);
+        generateContentBasedOnUserType(userType);
+
+    })
+    .catch(error => console.error('Error:', error));
+}
 function findArticle(search) {
     dataToSend = {article_title:search};
 
@@ -757,6 +807,7 @@ function toggleCommentForm() {
     // Clear the comment form when it is toggled
     commentForm.reset();
 }
+
 async function generateAuthorContent() {
     displayCommentsForAuthor();
 
@@ -775,6 +826,10 @@ async function generateAuthorContent() {
                 </div>
 
                 <img src= '${currentArticle.image}' alt="Description of the image" width="400" height="400">
+                <div class="container text-center">
+                <button id="prevButton" class="btn btn-secondary mr-2" onclick="loadPreviousArticle()">Previous</button>
+                <button id="nextButton" class="btn btn-primary" onclick="loadNextArticle()">Next</button>
+            </div>
 
 
             </div>
@@ -807,6 +862,13 @@ async function generateAuthorContent() {
 
     buttonDiv.innerHTML = '<button id = "addCommentButton" type="button" class="btn btn-primary" onclick="toggleCommentForm()">Add a Comment</button>';
 }
+
+function loadNextArticle(){
+    findNextArticle(currentArticle.index)
+}
+function loadPreviousArticle(){
+    findPrevArticle(currentArticle.index)
+}
 async function generateReaderContent() {
     displayComments();
     const viewWelcome = document.getElementById('viewWelcome');
@@ -818,6 +880,10 @@ async function generateReaderContent() {
             <h5>${currentArticle.category}</h5>
             <p>${currentArticle.body}</p>
             <img src= '${currentArticle.image}' alt="Description of the image" width="400" height="400">
+            <div class="container text-center">
+    <button id="prevButton" class="btn btn-secondary mr-2" onclick="loadPreviousArticle()">Previous</button>
+    <button id="nextButton" class="btn btn-primary" onclick="loadNextArticle()">Next</button>
+</div>
 
         </div>
     `;

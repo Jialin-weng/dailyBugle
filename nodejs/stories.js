@@ -91,6 +91,30 @@ console.log(article_title);
   }
 });
 
+app.post("/findArticleByIndex", async (req, res) => {
+  const database = client.db('DailyBugle');
+  const article = database.collection('Articles');
+
+  const { currentArticleIndex } = req.body;
+
+  try {
+    // Find the article with the next index (assuming index is an integer field)
+    const nextArticle = await article.findOne({ index: currentArticleIndex });
+
+    if (nextArticle) {
+      // Article found
+      res.status(200).json({ success: true, nextArticle });
+    } else {
+      // Article not found
+      res.status(404).json({ success: false, message: 'Next article not found' });
+    }
+  } catch (error) {
+    console.error('Error retrieving next article:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+
 app.post("/getAllComments", async (req, res) => {
   const database = client.db('DailyBugle');
   const article = database.collection('Articles');
