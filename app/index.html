@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Bugle News</title>
+
     <!-- Add your CSS link here for styling -->
 </head>
 <body>
@@ -29,10 +30,11 @@
                 </div>
     
                 <!-- Search Bar -->
-                <form class="form-inline my-2 my-lg-0 ml-2">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <form class="form-inline my-2 my-lg-0 ml-2" onsubmit="searchArticle(event)">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="searchInput">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                 </form>
+                
             </div>
         </nav>
     </header>
@@ -47,6 +49,7 @@
         <br><br>
 
         <div class="container" id="comments">
+
             <h2>Comments</h2>
 
             <div id = "addCommentDiv">
@@ -71,13 +74,12 @@
 
         </div>
 
+            <section id="adsContainer">
+                <!-- Your ad content goes here -->
+            </section>
 
-        <section id="adsContainer">
-            <!-- Add your ad content here -->
-                <!-- <img src="ad-image.jpg" alt="Advertisement"> -->
-        </section>
     </main>
-    <footer class="fixed-bottom fixed-right bg-light p-2 text-right">
+    <footer class="bg-light p-2 text-right">
         <p>&copy; 2023 Daily Bugle News</p>
     </footer>
     <script>src="controls.js"</script>

@@ -62,6 +62,58 @@ app.post("/articleChange", (req, res) => {
   );
 });
 
+app.post("/findArticle", async (req, res) => {
+  const database = client.db('DailyBugle');
+  const article = database.collection('Articles');
+
+  const { article_title } = req.body;
+console.log(article_title);
+  try {
+      // Convert the article_id to ObjectId
+
+      // Find the article with the given article_id
+      const articleDocument = await article.findOne({ title: article_title });
+      if (articleDocument) {
+          // Extract the comments array from the article document
+          const articleFound = articleDocument
+          console.log(articleFound)
+          res.status(200).json({ success: true, articleFound });
+      } else {
+         console.log("notfound")
+          res.status(404).json({ success: false, message: 'Article not found' });
+          
+      }
+  } catch (error) {
+      console.error('Error retrieving comments:', error);
+      res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+app.post("/getAllComments", async (req, res) => {
+  const database = client.db('DailyBugle');
+  const article = database.collection('Articles');
+  const { article_id } = req.body;
+
+  try {
+      // Convert the article_id to ObjectId
+      const articleObjectId = new ObjectId(article_id);
+
+      // Find the article with the given article_id
+      const articleDocument = await article.findOne({ _id: articleObjectId });
+
+      if (articleDocument) {
+          // Extract the comments array from the article document
+          const comments = articleDocument.comments || [];
+          res.status(200).json({ success: true, comments });
+      } else {
+          res.status(404).json({ success: false, message: 'Article not found' });
+      }
+  } catch (error) {
+      console.error('Error retrieving comments:', error);
+      res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
 
 app.post("/addComment", (req, res) => {
   const database = client.db('DailyBugle');
