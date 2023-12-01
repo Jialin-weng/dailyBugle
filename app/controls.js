@@ -14,6 +14,8 @@ endpoint['searchForArticle'] = 'http://localhost:3005/findArticle'
 
 var ipAddress = "";
 var currentArticle = null;
+var art1 = null;
+var art2 = null;
 
 const browserInfo = {
     appName: navigator.appName,
@@ -194,10 +196,45 @@ async function displayArticle() {
     const article = articleList[randomIndex];
     return article;
 }
+
+async function displayTeaser() {
+    const articleList = await getArticles();
+    // Check if there are any ads
+    if (articleList.length === 0) {
+        console.log('No articles available.');
+        return;
+    }
+    const randomIndex = Math.floor(Math.random() * articleList.length);
+    art = articleList[randomIndex];
+    return art;
+}
+
+
 async function searchArticle(event){
     event.preventDefault();
     const searchInput = document.getElementById('searchInput').value;
     findArticle(searchInput);
+}
+
+function findArticle(search) {
+    dataToSend = {article_title:search};
+
+    fetch(endpoint["searchForArticle"], {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.articleFound);
+        currentArticle = data.articleFound;
+        console.log(userType);
+        generateContentBasedOnUserType(userType);
+
+    })
+    .catch(error => console.error('Error:', error));
 }
 
 function findArticle(search) {
@@ -333,7 +370,9 @@ async function sendAdViewedRequest(adId, ipAddress,sendName) {
 // Wait for the DOM to be fully loaded
 document.addEventListener("DOMContentLoaded", async function() {
     // Call displayAds with the result of getAd
-    currentArticle = await displayArticle(getArticles());
+    currentArticle = await displayArticle();
+    art1 = await displayTeaser();
+    art2 = await displayTeaser();
     console.log(currentArticle);
     displayAds(getAd());
     const userType = getCookie('userType');
@@ -503,9 +542,9 @@ async function submitComment() {
 
     // Create a new list item for the comment
     const newComment = document.createElement('li');
+
     newComment.className = 'list-group-item';
-    newComment.textContent = commentContent;
-    console.log(newComment)
+
     const commentData = {
         article_id: currentArticle._id, 
         article_comment : commentContent,
@@ -513,6 +552,17 @@ async function submitComment() {
     };
 
     await submitCommentData(commentData);
+    newComment.className = 'list-group-item';
+
+    // Create a header element for the username
+    const usernameHeader = document.createElement('h4');
+    usernameHeader.textContent = currentUserName;
+    newComment.appendChild(usernameHeader);
+
+    // Create a paragraph element for the comment
+    const commentParagraph = document.createElement('p');
+    commentParagraph.textContent = document.getElementById('commentContent').value;
+    newComment.appendChild(commentParagraph);
 
 
     // Append the new comment to the comment list
@@ -698,12 +748,32 @@ async function generateReaderContent() {
     buttonDiv.innerHTML = '<button id = "addCommentButton" type="button" class="btn btn-primary" onclick="toggleCommentForm()">Add a Comment</button>';
 
 }
-function generateDefaultContent() {
+async function generateDefaultContent() {
+    displayComments();
+    
     // Example: Display default content for none or other user types
     const viewWelcome = document.getElementById('viewWelcome');
-    viewWelcome.innerHTML = '<div class="container text-center"><h2>Welcome!</h2><p>Your default content goes here.</p></div>';
-
-    // Insert additional content into ViewChange section
+    viewWelcome.innerHTML = '<div class="container text-center"><h2>Welcome!</h2><p>Please consider logging in</p></div>';
     const viewChangeSection = document.getElementById('viewContent');
-    viewChangeSection.innerHTML = '<div class="container text-center"><h2>Default View - Headline Story Title</h2><p>Default teaser for the headline story.</p></div>';
+    viewChangeSection.innerHTML = `
+        <div class="container text-center">
+            <h2>${currentArticle.title}</h2>
+            <h5>${currentArticle.category}</h5>
+            <p>${currentArticle.body}</p>
+            <img src= '${currentArticle.image}' alt="Description of the image" width="400" height="400">
+
+        </div>
+        <div class="container text-center">
+        <h2>${art1.teaser}</h2>
+        <img src= '${art1.image}' alt="Description of the image" width="100" height="100">
+        <h2>${art2.teaser}</h2>
+        <img src= '${art2.image}' alt="Description of the image" width="100" height="100">
+
+
+
+        </div>
+
+    `;
+
+
 }
