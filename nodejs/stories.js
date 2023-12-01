@@ -31,7 +31,7 @@ app.post("/articleChange", (req, res) => {
   const article = database.collection('Articles');
 
   // Assuming req.body contains the ad_id and other relevant information
-  const { article_id, article_title, article_content, article_edited } = req.body;
+  const { article_id, article_title, article_content, article_edited,article_category,article_image } = req.body;
 
   // Convert the ad_id to ObjectId
   const articleObjectId = new ObjectId(article_id);
@@ -43,7 +43,9 @@ app.post("/articleChange", (req, res) => {
       $set: {
         title: article_title,
         editedDate: article_edited,
-        body: article_content
+        body: article_content,
+        category: article_category,
+        image:article_image
       }
     },
     (err, result) => {

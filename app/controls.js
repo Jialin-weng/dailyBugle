@@ -545,6 +545,8 @@ async function submitArticleData(articleData) {
 async function submitArticleForm(id) {
     const articleTitle = document.getElementById('articleTitle').value;
     const articleContent = document.getElementById('articleContent').value;
+    const articleCategory = document.getElementById('articleCategory').value;
+    const articleImage = document.getElementById('articleImage').value;
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
     // Create a JSON object with the article information
@@ -553,6 +555,8 @@ async function submitArticleForm(id) {
         article_title: articleTitle,
         article_content: articleContent,
         article_edited : formattedDate,
+        article_category: articleCategory,
+        article_image: articleImage
     };
 
 
@@ -582,8 +586,8 @@ function toggleEditMode() {
 
     // Retrieve current article data and populate the form
 
-    document.getElementById('articleTitle').value = currentArticle.Title;
-    document.getElementById('articleContent').value = currentArticle.Content;
+    document.getElementById('articleTitle').value = currentArticle.title;
+    document.getElementById('articleContent').value = currentArticle.body;
     document.getElementById('articleImage').value = currentArticle.image;
 
     document.getElementById('articleCategory').value = currentArticle.category;
