@@ -9,7 +9,8 @@ endpoint['allArticles'] = 'http://localhost:3005/articles';
 endpoint['editArticles'] = 'http://localhost:3005/articleChange';
 endpoint['addComment'] = 'http://localhost:3005/addComment';
 endpoint['getAllComments'] = 'http://localhost:3005/getAllComments';
-endpoint['searchForArticle'] = 'http://localhost:3005/findArticle'
+endpoint['searchForArticle'] = 'http://localhost:3005/findArticle';
+endpoint['changeComments'] = 'http://localhost:3005/updateComment';
 
 
 var ipAddress = "";
@@ -400,6 +401,38 @@ function generateContentBasedOnUserType(userType) {
     }
 }
 
+async function updateComment(articleId, commentUser, commentContent, newCommentContent) {
+    try {
+        dataToSend = {article_id : articleId, comment_user: commentUser,comment_content: commentContent,new_comment_content: newCommentContent}
+      const response = await fetch(endpoint['changeComments'], {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+  
+      const result = await response;
+  
+      // Optionally, you can perform additional actions based on the server response
+      // For example, you can check if the server indicates success or failure and take appropriate actions.
+      if (response.status === 200) {
+        // Handle success
+        console.log('Comment updated successfully');
+      } else {
+        // Handle failure
+        console.error('Failed to update comment:', result.message);
+      }
+    } catch (error) {
+      console.error('Error sending POST request:', error);
+    }
+  }
+  
+
 
 async function displayComments() {
     try {
@@ -487,10 +520,11 @@ async function displayCommentsForAuthor() {
             });
         
             // Add a click event listener to the "Save" button
-            saveButton.addEventListener('click', () => {
+            saveButton.addEventListener('click', async() => {
                 // Update the comment text with the input value
+                console.log(currentArticle._id,comment.user_id,comment.article_comment,editInput.value);
+                await updateComment(currentArticle._id,comment.user_id,comment.article_comment,editInput.value);
                 comment.article_comment = editInput.value;
-        
                 // Update the paragraph text and toggle the display
                 commentParagraph.textContent = comment.article_comment;
                 commentParagraph.style.display = 'block';
@@ -501,7 +535,7 @@ async function displayCommentsForAuthor() {
                 saveButton.style.display = 'none';
         
                 // Call a function to save the edited comment (you can replace this with your own logic)
-                handleEditComment(comment._id, comment.article_comment);
+
             });
         
             centerContainer.appendChild(editButton);
@@ -520,17 +554,12 @@ async function displayCommentsForAuthor() {
 }
 
 // Example function to handle the edit action
-function handleEditComment(commentId) {
+function handleEditComment(commentId,) {
     // Implement your logic to handle the edit action for the comment with the given commentId
     console.log(`Edit button clicked for comment with ID: ${commentId}`);
 }
 
 
-// Example function to handle the edit action
-function handleEditComment(commentId) {
-    // Implement your logic to handle the edit action for the comment with the given commentId
-    console.log(`Edit button clicked for comment with ID: ${commentId}`);
-}
 
 
 async function getAllComments(articleId) {

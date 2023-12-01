@@ -148,3 +148,47 @@ app.post("/addComment", (req, res) => {
     }
   );
 });
+
+
+app.post("/updateComment", async (req, res) => {
+  const database = client.db('DailyBugle');
+  const article = database.collection('Articles');
+  const { article_id, comment_user, comment_content, new_comment_content } = req.body;
+  console.log(req.body);
+
+  try {
+    // Convert the article_id to ObjectId
+    const articleObjectId = new ObjectId(article_id);
+    console.log(articleObjectId);
+
+    // Find the article with the given article_id
+    const articleDocument = await article.findOne({ _id: articleObjectId });
+    // Check if the articleDocument exists
+    if (articleDocument) {
+      // Find the index of the comment within the comments array using user_id and article_comment
+      const commentIndex = articleDocument.comments.findIndex(comment => {
+        return comment.user_id === comment_user && comment.article_comment === comment_content;
+      });
+
+      // Check if the commentIndex is valid
+      if (commentIndex !== -1) {
+        // Update the comment's content
+        articleDocument.comments[commentIndex].article_comment = new_comment_content;
+
+        // Update the article in the database
+        await article.updateOne({ _id: articleObjectId }, { $set: { comments: articleDocument.comments } });
+
+        res.status(200).send('Comment updated successfully');
+      } else {
+        res.status(404).send('Comment not found');
+      }
+    } else {
+
+      res.status(404).send('Article not found');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
