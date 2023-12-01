@@ -373,9 +373,11 @@ document.addEventListener("DOMContentLoaded", async function() {
     currentArticle = await displayArticle();
     art1 = await displayTeaser();
     art2 = await displayTeaser();
-    console.log(currentArticle);
-    displayAds(getAd());
     const userType = getCookie('userType');
+    console.log(currentArticle);
+    if(userType != "author"){
+    displayAds(getAd());}
+    ;
     console.log(userType)
     generateContentBasedOnUserType(userType);
 });
@@ -766,6 +768,12 @@ async function generateAuthorContent() {
             </form>
         </div>
     `;
+    const buttonDiv= document.getElementById('addCommentDiv');
+
+
+    
+
+    buttonDiv.innerHTML = '<button id = "addCommentButton" type="button" class="btn btn-primary" onclick="toggleCommentForm()">Add a Comment</button>';
 }
 async function generateReaderContent() {
     displayComments();
@@ -805,15 +813,11 @@ async function generateDefaultContent() {
 
         </div>
         <div class="container text-center">
-        <h2>${art1.teaser}</h2>
+        <h5>${art1.teaser}</h5>
         <img src= '${art1.image}' alt="Description of the image" width="100" height="100">
-        <h2>${art2.teaser}</h2>
+        <h5>${art2.teaser}</h5>
         <img src= '${art2.image}' alt="Description of the image" width="100" height="100">
-
-
-
         </div>
-
     `;
 
 
