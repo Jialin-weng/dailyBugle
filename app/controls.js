@@ -438,37 +438,78 @@ async function displayCommentsForAuthor() {
         comments.forEach(comment => {
             const newComment = document.createElement('li');
             newComment.className = 'list-group-item';
-
+        
             // Create a header element for the username
             const usernameHeader = document.createElement('h4');
             usernameHeader.textContent = comment.user_id;
             newComment.appendChild(usernameHeader);
-
+        
             // Create a paragraph element for the comment
             const commentParagraph = document.createElement('p');
             commentParagraph.textContent = comment.article_comment;
             newComment.appendChild(commentParagraph);
-
+        
             // Create a container for centering
             const centerContainer = document.createElement('div');
             centerContainer.className = 'd-flex justify-content-center align-items-center';
-
+        
             // Create an "Edit" button
             const editButton = document.createElement('button');
             editButton.textContent = 'Edit';
             editButton.className = 'btn btn-primary btn-sm ml-2';
-
+        
+            // Create an input field for editing
+            const editInput = document.createElement('input');
+            editInput.type = 'text';
+            editInput.className = 'form-control';
+            editInput.style.display = 'none'; // Initially hidden
+        
+            // Create a "Save" button
+            const saveButton = document.createElement('button');
+            saveButton.textContent = 'Save';
+            saveButton.className = 'btn btn-success btn-sm ml-2';
+            saveButton.style.display = 'none'; // Initially hidden
+        
             // Add a click event listener to the "Edit" button
             editButton.addEventListener('click', () => {
-                // Call a function to handle the edit action (you can replace this with your own logic)
-                handleEditComment(comment._id);
+                // Toggle the display of the paragraph and input field
+                commentParagraph.style.display = 'none';
+                editInput.style.display = 'block';
+        
+                // Set the input value to the current comment text
+                editInput.value = comment.article_comment;
+        
+                // Toggle the display of "Edit" and "Save" buttons
+                editButton.style.display = 'none';
+                saveButton.style.display = 'inline-block';
             });
-
+        
+            // Add a click event listener to the "Save" button
+            saveButton.addEventListener('click', () => {
+                // Update the comment text with the input value
+                comment.article_comment = editInput.value;
+        
+                // Update the paragraph text and toggle the display
+                commentParagraph.textContent = comment.article_comment;
+                commentParagraph.style.display = 'block';
+                editInput.style.display = 'none';
+        
+                // Toggle the display of "Edit" and "Save" buttons
+                editButton.style.display = 'inline-block';
+                saveButton.style.display = 'none';
+        
+                // Call a function to save the edited comment (you can replace this with your own logic)
+                handleEditComment(comment._id, comment.article_comment);
+            });
+        
             centerContainer.appendChild(editButton);
+            centerContainer.appendChild(editInput);
+            centerContainer.appendChild(saveButton);
             newComment.appendChild(centerContainer);
-
+        
             commentList.appendChild(newComment);
         });
+        
 
         console.log('Comments displayed successfully');
     } catch (error) {
